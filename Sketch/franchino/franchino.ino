@@ -1,7 +1,7 @@
 // irrighino firmware
 // www.lucadentella.it
 
-#define FIRMWARE_VERSION "1.0"
+#define FIRMWARE_VERSION "1.1"
 
 // library includes
 #include <Bridge.h>
