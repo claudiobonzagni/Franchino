@@ -19,19 +19,12 @@
 #define OUT_1              7
 #define OUT_2              6
 #define OUT_3              5
-//#define OUT_4              4
-
 
 // switches, analog PINs that read the 3-way panel switches
 #define SWITCH_1           5
 #define SWITCH_2           4
 #define SWITCH_3           3
-//#define SWITCH_4           4
 
-//#define SWITCH_1           0
-//#define SWITCH_2           1
-//#define SWITCH_3           2
-//#define SWITCH_4           3
 // rain sensor, digital PIN connected to the rain sensor
 // (basically a 2-way switch, normally closed)
 #define RAIN_SENSOR        10

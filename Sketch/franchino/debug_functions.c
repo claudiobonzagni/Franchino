@@ -23,9 +23,9 @@ char* getRainSensorText(int sensorStatus) {
 
 char* getOutputDescription(int outputId) {
 
-  if(outputId == OUT_1) return "SUD V1";
-  if(outputId == OUT_2) return "NORD V2";
-  if(outputId == OUT_3) return "OVEST V3";
+  if(outputId == OUT_1) return "SUD - V1";
+  if(outputId == OUT_2) return "NORD - V2";
+  if(outputId == OUT_3) return "OVEST - V3";
   //if(outputId == OUT_4) return "REAR";
 }
 
