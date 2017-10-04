@@ -1,0 +1,125 @@
+body {
+    margin: 8px;
+}
+
+.franchino-info {
+    padding: 15px;
+}
+
+.tab-content {
+    margin-top: 55px;
+}
+
+.franchino-nav {
+    margin-top: 5px
+}
+.franchino-panel {
+    margin-top: 10px
+}
+
+ #runtime-fragment {
+    margin-top: 15px;
+}
+
+.valvola-line {
+    margin: 5px;
+}
+
+.valvola-element {
+    margin-right: 30px;
+    vertical-align: middle;
+    font-family: arial, helvetica;
+    font-size: 14px;
+}
+
+.wc-scrollable-grid {
+    display: block;
+}
+
+.wc-time-slots {
+    position: relative;
+}
+
+.ui-slider-horizontal {
+    /*width: 400px;*/
+}
+
+.out-line {
+    display: table;
+    margin-bottom: 30px;
+    width:100%;
+}
+
+.out-label {
+    display: table-cell;
+    /*width: 150px;*/
+    padding-bottom: 15px;
+    vertical-align: middle;
+}
+
+.out-slider {
+    background: linear-gradient(to right, #d9534f 0%, #EC971F 50%, #5cb85c 100%);
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 40px;
+    display: inline-block;
+}
+
+    .out-slider .ui-slider-handle {
+        height: 48px;
+    }
+
+    .out-slider .ui-slider-pip .ui-slider-label {
+        top: 10px;
+        font-weight: bold;
+        font-size: 16px;
+    }
+
+        .out-slider .ui-slider-pip .ui-slider-label[data-value="0"] {
+            color: #d9534f;
+        }
+
+            .out-slider .ui-slider-pip .ui-slider-label[data-value="0"]:hover {
+                color: #BF0000;
+            }
+
+        .out-slider .ui-slider-pip .ui-slider-label[data-value="1"] {
+            color: #EC971F;
+        }
+
+            .out-slider .ui-slider-pip .ui-slider-label[data-value="1"]:hover {
+                color: #BF9F00;
+            }
+
+        .out-slider .ui-slider-pip .ui-slider-label[data-value="2"] {
+            color: #5cb85c;
+        }
+
+            .out-slider .ui-slider-pip .ui-slider-label[data-value="2"]:hover {
+                color: #00BF16;
+            }
+
+#setup-fragment-button {
+    margin-bottom: 5px;
+}
+
+.wc-scrollable-grid {
+    height: 500px !important;
+}
+
+.ui-slider-pips .ui-slider-pip {
+    top: 40px;
+}
+
+.ui-slider-pips .ui-slider-line {
+    width: 0px;
+    height: 8px;
+}
+
+.ui-slider-pips .ui-slider-label {
+    margin-left: -1.5em;
+}
+
+.franchino-logo {
+    margin-top: 9px;
+}

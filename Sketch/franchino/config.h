@@ -1,7 +1,7 @@
 // use physical switches
 #define USE_SWITCHES     true
 
-// debug output (enable/disable)
+// debug output (enable/disable )
 //#define DEBUG_MODE
 //#ifdef DEBUG_MODE
   //#define DEBUG_PRINT(x)  Console.print(x)
