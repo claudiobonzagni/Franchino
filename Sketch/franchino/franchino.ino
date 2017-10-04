@@ -24,6 +24,9 @@ int switch2Position;
 int switch3Position;
 bool rainSensorStatus;
 
+float temperature;
+const char *meteoStation = "0";
+
 Process date; // process used to get the date
 //int dates, month, years, hours, minutes;  // for the results
 int hours, minutes, seconds;
@@ -45,6 +48,12 @@ OneWire oneWire(ONE_WIRE_BUS);
 // Pass our oneWire reference to Dallas Temperature.
 DallasTemperature sensors(&oneWire);
 
+// 3600000 millisecondi in un'ora
+// 5000 millisecondi tra una lettura e l'altra
+// / (3600000 / 5000) = 720
+int timerMax = 10; //720
+int timerCount = timerMax;
+      
 // ****************************************************
 // SETUP
 // ****************************************************
@@ -65,10 +74,11 @@ void setup()
   lcd.init();                          //initialize the lcd
   lcd.backlight();                     //open the backlight
   lcd.setCursor(0, 0);                 // go to the top left corner
-  lcd.print(" *** Franchino ***    "); // write this string on the top row
-
-  DEBUG_PRINT2("Avvio Franchino versione: ");
-  lcd.print(FIRMWARE_VERSION);
+  lcd.print("** Franchino v." ); // write this string on the top row
+  lcd.print( FIRMWARE_VERSION); // write this string on the top row
+ 
+  DEBUG_PRINT2("Avvio ver: ");
+  lcd.print(FIRMWARE_VERSION );
 
   Bridge.begin();
 
@@ -104,7 +114,7 @@ void setup()
 
   DEBUG_PRINTLN("- Boot ok, running...");
   DEBUG_PRINTLN();
-  lcd.print("                   ");
+  //lcd.print("                   ");
 }
 
 void loop()
@@ -165,10 +175,23 @@ void loop()
       // After we got the temperatures, we can print them here.
       // We use the function ByIndex, and as an example get the temperature from the first sensor only.
       Serial.print("Temperature for the device 1 (index 0) is: ");
-      Serial.println(sensors.getTempCByIndex(0));
+      temperature =sensors.getTempCByIndex(0);
+      Serial.println(temperature);
       lcd.setCursor(10, 0);
       lcd.print(" T: ");
-      lcd.print(sensors.getTempCByIndex(0));
+      lcd.print(temperature);
+
+
+      if (timerCount>timerMax) {
+        // Salvo la temperatura in MySql
+        postData();
+    
+        timerCount=0;
+        }
+        
+      timerCount = timerCount +1;
+      Serial.print(" timerCount ");
+      Serial.print(timerCount);        
     }
 
     lastMinutes = minutes; // save to do a time comparison
@@ -290,6 +313,27 @@ int readSwitchStatus(int switchId)
     actualStatus = SWITCH_AUTO;
 
   return actualStatus;
+}
+
+
+bool postData()
+{
+  Serial.print(" ***   postData *** ");
+  Process p;
+  p.begin("php-cli");
+  p.addParameter("/www/sd/irrighino/php/log-temp.php");
+ // p.addParameter("temp=" + String(temperature, 2) + "&v=" + meteoStation);
+ p.addParameter("23.25");
+ p.addParameter("0");
+  p.run();
+
+  DEBUG_PRINTLN("Log Temp update sent");
+  while (p.available() > 0)
+  {
+    char c = p.read();
+    DEBUG_PRINT(c);
+  }
+  DEBUG_PRINTLN();
 }
 
 // Update the switch position

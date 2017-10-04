@@ -55,7 +55,7 @@ $outputs[3]["borderColor"] = "#0049C9";
 date_default_timezone_set("Europe/Rome");
 define("LOG_DIR", "/var/log/irrighino/");
 define("RETENTION_DAYS", 7);
-
+define("RETENTION_DAYS_LOG_TEMP", 3);
 
 // --------------- Arduino communication functions ---------------
 function callArduino($command) {
@@ -84,7 +84,21 @@ function callArduino($command) {
 // --------------- Events and return codes functions ---------------
 function logEvent($db_handler, $eventType, $message) {
 	
-	$sql = "INSERT INTO LOG(EVENT_ID, DATE, EVENT_DESC) VALUES($eventType, DATETIME('NOW'), '$message')";
+	// Create a datetime (now, in this case 2017-Feb-11)
+	$today = date('Y-m-d H:i:s');
+
+	//$sql = "INSERT INTO LOG(EVENT_ID, DATE, EVENT_DESC) VALUES($eventType, DATETIME('NOW'), '$message')";
+	$sql = "INSERT INTO LOG(EVENT_ID, DATE, EVENT_DESC) VALUES($eventType, '$today', '$message')";
+	DBexec($db_handler, $sql);
+}
+function logTemp($db_handler, $eventType, $temp) {
+		
+	// Create a datetime (now, in this case 2017-Feb-11)
+	$today = date('Y-m-d H:i:s');
+
+	//$sql = "INSERT INTO TEMP_LOG(EVENT_ID, DATE, EVENT_DESC) VALUES($eventType, CURRENT_TIMESTAMP, '$temp')";
+	//$sql = "INSERT INTO TEMP_LOG(EVENT_ID, DATE, EVENT_DESC) VALUES($eventType, DATETIME('NOW','localtime'), '$temp')";
+	$sql = "INSERT INTO TEMP_LOG(EVENT_ID, DATE, EVENT_DESC) VALUES($eventType, '$today', '$temp')";
 	DBexec($db_handler, $sql);
 }
 
