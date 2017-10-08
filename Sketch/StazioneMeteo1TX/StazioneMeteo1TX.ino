@@ -3,7 +3,7 @@
  *  Asks some network parameters
  *  Sends and receives message from the server in every 2 seconds
  *  Communicates: wifi_server_01.ino
- */ 
+ */
 #include <SPI.h>
 
 #include <ESP8266HTTPClient.h>
@@ -11,7 +11,7 @@
 
 #include <OneWire.h>
 #include <DallasTemperature.h>
- 
+
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 
@@ -30,20 +30,19 @@ DallasTemperature sensors(&oneWire);
 #define SERIAL_DEBUG // Uncomment this to dissable serial debugging
 
 byte ledPin = 2;
-char ssid[] = "ASUS";           // SSID of your home WiFi
-char pass[] = "EABE577DA8";            // password of your home WiFi
+char ssid[] = "ASUS";       // SSID of your home WiFi
+char pass[] = "EABE577DA8"; // password of your home WiFi
 
 unsigned long askTimer = 0;
 
-IPAddress server(192,168,178,224);       // the fix IP address of the server
+IPAddress server(192, 168, 178, 224); // the fix IP address of the server
 WiFiClient client;
-
 
 const char *host = "192.168.178.185";
 const char *hostUrl = "//sd/irrighino/php/log-temp.php";
 
 float temperature;
-const char *meteoStation = "1";
+const char *meteoStation = "1"; // Identificativo della stazione meteo
 
 // 3600000 millisecondi in un'ora
 // 5000 millisecondi tra una lettura e l'altra
@@ -53,8 +52,8 @@ int timerCount = timerMax;
 
 bool connectedToWiFI = false;
 
-void setup() {
-  
+void setup()
+{
 
 #ifdef SERIAL_DEBUG
   Serial.begin(115200);
@@ -73,18 +72,19 @@ void setup() {
 
   // fissiamo la dimensione del testo
   display.setTextSize(3);
-  
- // Start up the library
+
+  // Start up the library
   sensors.begin();
 
   delay(10); // short delay
-  
-  WiFi.begin(ssid, pass);             // connects to the WiFi router
-  while (WiFi.status() != WL_CONNECTED) {
+
+  WiFi.begin(ssid, pass); // connects to the WiFi router
+  while (WiFi.status() != WL_CONNECTED)
+  {
     Serial.print(".");
     delay(500);
   }
-/*  Serial.println("Connected to wifi");
+  /*  Serial.println("Connected to wifi");
   Serial.print("Status: "); Serial.println(WiFi.status());    // Network parameters
   Serial.print("IP: ");     Serial.println(WiFi.localIP());
   Serial.print("Subnet: "); Serial.println(WiFi.subnetMask());
@@ -94,10 +94,9 @@ void setup() {
   pinMode(ledPin, OUTPUT);
 }
 
-void loop () {
- 
+void loop()
+{
 
-  
   // call sensors.requestTemperatures() to issue a global temperature
   // request to all devices on the bus
   Serial.print("Requesting temperatures...");
@@ -106,8 +105,8 @@ void loop () {
   // After we got the temperatures, we can print them here.
   // We use the function ByIndex, and as an example get the temperature from the first sensor only.
   Serial.print("Temperature for the device 1 (index 0) is: ");
- temperature =sensors.getTempCByIndex(0);
-  
+  temperature = sensors.getTempCByIndex(0);
+
   Serial.println(temperature);
 
   display.setCursor(0, 5);
@@ -116,38 +115,39 @@ void loop () {
   display.print(" C");
   display.display();
   display.clearDisplay();
-  
-  //INVIO
- client.connect(server, 80);   // Connection to the server
-  digitalWrite(ledPin, LOW);    // to show the communication only (inverted logic)
+
+  //Invio della temperatura al server (RX2)
+  client.connect(server, 80); // Connection to the server
+  digitalWrite(ledPin, LOW);  // to show the communication only (inverted logic)
   Serial.println(".");
-  client.println(temperature);  // sends the message to the server
-  String answer = client.readStringUntil('\r');   // receives the answer from the sever
+  client.println(temperature);                  // sends the message to the server
+  String answer = client.readStringUntil('\r'); // receives the answer from the sever
   Serial.println("from server: " + answer);
   client.flush();
   digitalWrite(ledPin, HIGH);
-  
- 
-   Serial.println("temperatora inviata: ");
-   Serial.println((temperature));
-  if (timerCount>timerMax) {
-    // Salvo la temperatura in MySql
+
+  Serial.println("temperatura inviata: ");
+  Serial.println((temperature));
+  if (timerCount > timerMax)
+  {
+    // Invio i dati della temperatura al server Arduino Yun
     postData();
 
-    timerCount=0;
-    }
-  
-  timerCount = timerCount +1;
+    timerCount = 0;
+  }
+
+  timerCount = timerCount + 1;
   Serial.println("timerCount: ");
   Serial.println(timerCount);
 
-  delay(5000);                  // client will trigger the communication after two seconds
-
+  delay(5000); // client will trigger the communication after two seconds
 }
 
 bool postData()
 {
-
+/*
+Invio i dati della temperatura al server Arduino Yun (per salvarli nel database SqlLite)
+*/
   WiFiClient client;
   if (client.connect(host, 80))
   {
@@ -194,23 +194,3 @@ bool postData()
   }
 }
 
-void debug(String message)
-{
-#ifdef SERIAL_DEBUG
-  Serial.print(message);
-#endif
-}
-
-void debugln(String message)
-{
-#ifdef SERIAL_DEBUG
-  Serial.println(message);
-#endif
-}
-
-void debugln()
-{
-#ifdef SERIAL_DEBUG
-  Serial.println();
-#endif
-}

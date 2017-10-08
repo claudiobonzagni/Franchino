@@ -8,10 +8,8 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
 
-
 #include <OneWire.h>
 #include <DallasTemperature.h>
-
 
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
@@ -36,7 +34,7 @@ const char *hostUrl = "//sd/irrighino/php/log-temp.php";
 float temperature;
 float temperatureRemote;
 String temperatureRemoteString;
-const char *meteoStation = "2";
+const char *meteoStation = "2"; // Identificativo della stazione meteo
 String valueToPrint;
 bool temperatureExt = false;
 
@@ -47,14 +45,13 @@ int timerMax = 360; //720
 int timerCount = timerMax;
 
 byte ledPin = 2;
-char ssid[] = "ASUS";           // SSID of your home WiFi
-char pass[] = "EABE577DA8";            // password of your home WiFi
-WiFiServer server(80);                    
+char ssid[] = "ASUS";       // SSID of your home WiFi
+char pass[] = "EABE577DA8"; // password of your home WiFi
+WiFiServer server(80);
 
+void setup()
+{
 
-void setup() {
-  
- 
 #ifdef SERIAL_DEBUG
   Serial.begin(115200);
   delay(200);
@@ -62,9 +59,8 @@ void setup() {
 #endif
 
   Serial.println("setup");
- //WiFi.config(ip, gateway, subnet);       // forces to use the fix IP
+  //WiFi.config(ip, gateway, subnet);       // forces to use the fix IP
 
- 
   // per default by default viene impostata una tensione ionterna di 3.3V
   display.begin(SSD1306_SWITCHCAPVCC);
 
@@ -82,29 +78,39 @@ void setup() {
 
   delay(10); // short delay
 
-  
-  WiFi.begin(ssid, pass);                 // connects to the WiFi router
-   Serial.println("WiFi.begin");
-  
-  while (WiFi.status() != WL_CONNECTED) {
+  WiFi.begin(ssid, pass); // connects to the WiFi router
+  Serial.println("WiFi.begin");
+
+  while (WiFi.status() != WL_CONNECTED)
+  {
     Serial.print(".");
     delay(500);
   }
-  server.begin();                         // starts the server
- Serial.println("Connected to wifi");
-  Serial.print("Status: "); Serial.println(WiFi.status());  // some parameters from the network
-  Serial.print("IP: ");     Serial.println(WiFi.localIP());
-  Serial.print("Subnet: "); Serial.println(WiFi.subnetMask());
-  Serial.print("Gateway: "); Serial.println(WiFi.gatewayIP());
-  Serial.print("SSID: "); Serial.println(WiFi.SSID());
-  Serial.print("Signal: "); Serial.println(WiFi.RSSI());
-  Serial.print("Networks: "); Serial.println(WiFi.scanNetworks());
+  server.begin(); // starts the server
+ 
+  // Visualizzo informazioni
+  Serial.println("Connected to wifi");
+  Serial.print("Status: ");
+  Serial.println(WiFi.status()); // some parameters from the network
+  Serial.print("IP: ");
+  Serial.println(WiFi.localIP());
+  Serial.print("Subnet: ");
+  Serial.println(WiFi.subnetMask());
+  Serial.print("Gateway: ");
+  Serial.println(WiFi.gatewayIP());
+  Serial.print("SSID: ");
+  Serial.println(WiFi.SSID());
+  Serial.print("Signal: ");
+  Serial.println(WiFi.RSSI());
+  Serial.print("Networks: ");
+  Serial.println(WiFi.scanNetworks());
+
   pinMode(ledPin, OUTPUT);
 }
 
-void loop () {
+void loop()
+{
 
-  
   // call sensors.requestTemperatures() to issue a global temperature
   // request to all devices on the bus
   Serial.print("Requesting temperatures...");
@@ -113,61 +119,64 @@ void loop () {
   // After we got the temperatures, we can print them here.
   // We use the function ByIndex, and as an example get the temperature from the first sensor only.
   Serial.print("Temperature for the device 1 (index 0) is: ");
- temperature =sensors.getTempCByIndex(0);
- Serial.println(temperature);
+  temperature = sensors.getTempCByIndex(0);
+  Serial.println(temperature);
 
-//LEGGO REMOTE
-
+  // Avvio server
   WiFiClient client = server.available();
-  if (client) {
-    if (client.connected()) {
-      digitalWrite(ledPin, LOW);  // to show the communication only (inverted logic)
+  if (client)
+  {
+    if (client.connected())
+    {
+      digitalWrite(ledPin, LOW); // to show the communication only (inverted logic)
       Serial.println(".");
-      String request = client.readStringUntil('\r');    // receives the message from the client
-      temperatureRemoteString=request;
-      Serial.print("From client: "); Serial.println(request);
+      String request = client.readStringUntil('\r'); // receives the message from the client
+      temperatureRemoteString = request;
+      Serial.print("From client: ");
+      Serial.println(request);
       client.flush();
       client.println("Hi client! No, I am listening.\r"); // sends the answer to the client
       digitalWrite(ledPin, HIGH);
     }
-    client.stop();                // tarminates the connection with the client
+    client.stop(); // tarminates the connection with the client
   }
-  
- display.setCursor(0, 5);
- 
 
-  if (temperatureExt){
-       valueToPrint = temperatureRemoteString + " E";
-    }
-   else{
-     valueToPrint = String(temperature, 2) + " I";
-    }
-    temperatureExt= !temperatureExt;
-    
-    display.print(valueToPrint);
-    display.display();
-    display.clearDisplay();
-    
+  display.setCursor(0, 5);
 
-  if (timerCount>timerMax) {
-    // Salvo la temperatura in MySql
+  if (temperatureExt)
+  {
+    valueToPrint = temperatureRemoteString + " E";
+  }
+  else
+  {
+    valueToPrint = String(temperature, 2) + " I";
+  }
+  temperatureExt = !temperatureExt;
+
+  display.print(valueToPrint);
+  display.display();
+  display.clearDisplay();
+
+  if (timerCount > timerMax)
+  {
+    // Invio i dati della temperatura al server Arduino Yun
     postData();
 
-    timerCount=0;
-    }
-  
-  timerCount = timerCount +1;
+    timerCount = 0;
+  }
+
+  timerCount = timerCount + 1;
   Serial.println("timerCount: ");
   Serial.println(timerCount);
 
-  delay(2000);                  // client will trigger the communication after two seconds
-
+  delay(2000); // client will trigger the communication after two seconds
 }
-
 
 bool postData()
 {
-
+/*
+Invio i dati della temperatura al server Arduino Yun (per salvarli nel database SqlLite)
+*/
   WiFiClient client;
   if (client.connect(host, 80))
   {
@@ -212,26 +221,5 @@ bool postData()
     Serial.println("connection failed");
     return false;
   }
-}
-
-void debug(String message)
-{
-#ifdef SERIAL_DEBUG
-  Serial.print(message);
-#endif
-}
-
-void debugln(String message)
-{
-#ifdef SERIAL_DEBUG
-  Serial.println(message);
-#endif
-}
-
-void debugln()
-{
-#ifdef SERIAL_DEBUG
-  Serial.println();
-#endif
 }
 
