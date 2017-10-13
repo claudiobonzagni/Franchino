@@ -123,3 +123,22 @@ body {
 .franchino-logo {
     margin-top: 9px;
 }
+.fr-temp-title{
+	padding-left:20px;
+	padding-bottom:20px;
+	font-size: 20px;
+	text-align:center;
+	
+}
+.fr-temp-gauge canvas{
+	
+	margin-left: 0px;
+	text-align:center;
+	margin: auto;
+	display: block;
+}
+.fr-temp-date{
+	padding-top:20px;	
+	font-size: 16px;
+	text-align:center;
+}
