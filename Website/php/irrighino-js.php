@@ -1,11 +1,11 @@
 <?php
 require('include.php');
 
-session_start();
-if(empty($_SESSION["authenticated"]) || $_SESSION["authenticated"] != 'true') {
-	header('Location: login.php');
-	exit();
-}
+//session_start();
+//if(empty($_SESSION["authenticated"]) || $_SESSION["authenticated"] != 'true') {
+//	header('Location: login.php');
+//	exit();
+//}
 
 ?>
 
@@ -32,6 +32,10 @@ function init() {
 		}
 	}*/
 	// i);
+	// Inizializzo temp gauge
+	//$(".tempGauge0").tempGauge({width:50, borderWidth:4, borderColor:"#adadad", fillColor:"red", showLabel:true});
+	//$(".tempGauge1").tempGauge({width:50, borderWidth:4, borderColor:"#adadad", fillColor:"green", showLabel:true});
+	//$(".tempGauge2").tempGauge({width:50, borderWidth:4, borderColor:"#adadad", fillColor:"#dcdcdc", showLabel:true});
 	
 	// draw the runtime tab
 	$("#runtime-fragment").append("<?php
@@ -76,7 +80,55 @@ function init() {
 			echo '$( "#slider' . $i . '" ).on( "slidechange", function( event, ui ) {sliderChangeHandler(' . $i . ', ui, event);} );';
 	?>
 	
+		
+	$.getJSON("php/get-last-temp.php", function(data) {  
+
+	//alert(data);
+	var tempGauge;
+	var tempGaugeValue;
+	var tempColor;
 	
+	$.each(data, function(key, value){		
+		
+		tempGauge = ".tempGauge" + value[0] ;
+		tempGaugeValue = value[2] + "&deg;C " ;
+		console.log(tempGauge);
+		console.log(tempGaugeValue);		
+		//debugger;
+		tempColor ="#5DB85C";
+		if (value[0]=="0") {tempColor="#D9534F"};
+		if (value[0]=="1") {tempColor="#E89821"};
+		
+		$(tempGauge).html(tempGaugeValue);
+		$(tempGauge).tempGauge({width:85, borderWidth:4, labelSize:20, borderColor:"#adadad", fillColor:tempColor ,showScale:false, showLabel:true, minTemp: -30, maxTemp: 50, defaultTemp: value[2]});
+		$(tempGauge + "Date").html(value[1].replace(" ", "<br />"));
+		
+		<?php
+			//echo '$(".tempGauge' . value[0] . '").html("31&deg;C")';
+		?>
+	});
+	
+	/*
+	var dataPoints = [];
+	$.each(data, function(key, value){
+		dataPoints.push({x: value[0], y: parseInt(value[1])});
+	});
+
+	  var chart = new CanvasJS.Chart("chartContainer",{
+			title:{
+				text:"Rendering Chart with dataPoints from External JSON"
+			},
+			data: [{
+			type: "line",
+				dataPoints : dataPoints,
+			}]
+		});
+		chart.render();
+		*/
+	});
+
+
+
 	// initialize the WeekCalendar object
 	initWeekCalendar();
 	
@@ -225,7 +277,7 @@ function initWeekCalendar() {
 
 
 // -------------------- GUI FUNCTIONS --------------------
-function updateGUI_new() {
+function updateGUI() {
 	
 	// update the tabe
 	table.ajax.reload();
@@ -250,7 +302,7 @@ function updateGUI_new() {
 		
 		<?php } ?>
 }
-function updateGUI() {
+function updateGUI_Old() {
 	
 	// update the tabe
 	table.ajax.reload();
@@ -295,14 +347,14 @@ function updateGUI() {
 }
 
 // -------------------- SLIDER FUNCTIONS --------------------
-function sliderChangeHandler_new(id, ui, event) {
+function sliderChangeHandler(id, ui, event) {
 
 	if(!noFireEvent) {
 		
 	}
 	else noFireEvent = false;
 }
-function sliderChangeHandler(id, ui, event) {
+function sliderChangeHandler_Old(id, ui, event) {
 
 	if(!noFireEvent) {
 		$.ajax({		
