@@ -3,6 +3,9 @@
  *  Asks some network parameters
  *  Sends and receives message from the server in every 2 seconds
  *  Communicates: wifi_server_01.ino
+ *
+ *  SERVER: 192.168.178.224
+ *
  */
 #include <SPI.h>
 
