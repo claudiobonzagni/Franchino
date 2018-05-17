@@ -3,6 +3,11 @@
  *  Starts WiFi server with fix IP and listens
  *  Receives and sends messages to the client
  *  Communicates: wifi_client_01.ino
+ *
+ *  SERVER: 192.168.178.224
+ *  CLIENT TX 1: 192.168.178.234
+ *  CLIENT TX 3: 192.168.178.236
+ *
  */
 #include <SPI.h>
 #include <ESP8266WiFi.h>
@@ -33,10 +38,14 @@ const char *hostUrl = "//sd/irrighino/php/log-temp.php";
 
 float temperature;
 float temperatureRemote;
-String temperatureRemoteString;
+String temperatureRemote1String;
+String temperatureRemote3String;
+String clientIPAddress;
 const char *meteoStation = "2"; // Identificativo della stazione meteo
 String valueToPrint;
-bool temperatureExt = false;
+//bool temperatureExt = false;
+int meteoToShow = 1;
+
 
 // 3600000 millisecondi in un'ora
 // 5000 millisecondi tra una lettura e l'altra
@@ -130,10 +139,22 @@ void loop()
     {
       digitalWrite(ledPin, LOW); // to show the communication only (inverted logic)
       Serial.println(".");
-      String request = client.readStringUntil('\r'); // receives the message from the client
-      temperatureRemoteString = request;
-      Serial.print("From client: ");
-      Serial.println(request);
+      String request = client.readStringUntil('\r'); // receives the message from the client	 
+		
+	  clientIPAddress = client.remoteIP(); // Leggo IP del client
+	  
+	  Serial.print("From client: ");
+      Serial.println(clientIPAddress);
+	  Serial.println(request);
+	  
+	  // Controllo il client dall'IP
+	  if (clientIPAddress == "192.168.178.234"){
+		temperatureRemote1String = request;  
+	  }
+	  else{
+		temperatureRemote3String = request;
+	  }
+           
       client.flush();
       client.println("Hi client! No, I am listening.\r"); // sends the answer to the client
       digitalWrite(ledPin, HIGH);
@@ -143,16 +164,32 @@ void loop()
 
   display.setCursor(0, 5);
 
-  if (temperatureExt)
-  {
-    valueToPrint = temperatureRemoteString + " E";
-  }
-  else
-  {
-    valueToPrint = String(temperature, 2) + " I";
-  }
-  temperatureExt = !temperatureExt;
+//  if (temperatureExt)
+//  {
+//    valueToPrint = temperatureRemote1String + " E";
+//  }
+//  else
+//  {
+//    valueToPrint = String(temperature, 2) + " I";
+//  }
+//  temperatureExt = !temperatureExt;
 
+  if (meteoToShow==1){ 
+	valueToPrint = temperatureRemote1String + " E"; // Esterno
+  }
+  
+  if (meteoToShow==2){ 
+	 valueToPrint = String(temperature, 2) + " I"; // Interno inferiore
+  }
+  
+  if (meteoToShow==3){ 
+	 valueToPrint = temperatureRemote3String + " S"; // Interno superiore
+  }
+  
+  if (meteoToShow > 3) {	  
+	  meteoToShow = 0; // Reset
+  }
+  
   display.print(valueToPrint);
   display.display();
   display.clearDisplay();
@@ -166,8 +203,13 @@ void loop()
   }
 
   timerCount = timerCount + 1;
+  meteoToShow = meteoToShow + 1;
+  
   Serial.println("timerCount: ");
   Serial.println(timerCount);
+
+  Serial.println("meteoToShow: ");
+  Serial.println(meteoToShow);
 
   delay(2000); // client will trigger the communication after two seconds
 }

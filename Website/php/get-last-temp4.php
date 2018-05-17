@@ -12,6 +12,8 @@
 	$sql .= "SELECT EVENT_ID, DATE, EVENT_DESC FROM (SELECT EVENT_ID, datetime(DATE, 'localtime') as DATE, EVENT_DESC FROM TEMP_LOG WHERE EVENT_ID=1 ORDER BY DATE DESC LIMIT 1)";
 	$sql .= " UNION ";
 	$sql .= "SELECT EVENT_ID, DATE, EVENT_DESC FROM (SELECT EVENT_ID, datetime(DATE, 'localtime') as DATE, EVENT_DESC FROM TEMP_LOG WHERE EVENT_ID=2 ORDER BY DATE DESC LIMIT 1)";
+	$sql .= " UNION ";
+	$sql .= "SELECT EVENT_ID, DATE, EVENT_DESC FROM (SELECT EVENT_ID, datetime(DATE, 'localtime') as DATE, EVENT_DESC FROM TEMP_LOG WHERE EVENT_ID=3 ORDER BY DATE DESC LIMIT 1)";
 	$sql .= " ORDER BY EVENT_ID ";
 		
 	$outRet = "";
@@ -21,7 +23,8 @@
 			
 		if($row['EVENT_ID']=="0") $stazione="Casetta";
 		if($row['EVENT_ID']=="1") $stazione="Esterno";
-		if($row['EVENT_ID']=="2") $stazione="Interno";			
+		if($row['EVENT_ID']=="2") $stazione="Inferiore";
+        if($row['EVENT_ID']=="3") $stazione="Superiore";		
 		
 		$outRet .= $stazione . ' T:' . $row['EVENT_DESC'] . ' &deg;C   ';
 		$outRet .= date("d/m/Y H:i:s", strtotime($row['DATE'])) . '<br />';
