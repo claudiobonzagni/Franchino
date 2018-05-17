@@ -1,5 +1,6 @@
 
-/*  CLIENTnt 234  Connects to the home WiFi network
+/* 
+ *  CLIENTnt 234  Connects to the home WiFi network
  *  Asks some network parameters
  *  Sends and receives message from the server in every 2 seconds
  *  Communicates: wifi_server_01.ino
