@@ -100,7 +100,7 @@ function init() {
 		if (value[0]=="1") {tempColor="#E89821"};
 		
 		$(tempGauge).html(tempGaugeValue);
-		$(tempGauge).tempGauge({width:85, borderWidth:4, labelSize:20, borderColor:"#adadad", fillColor:tempColor ,showScale:false, showLabel:true, minTemp: -30, maxTemp: 50, defaultTemp: value[2]});
+		$(tempGauge).tempGauge({width:100, borderWidth:4, labelSize:18, borderColor:"#adadad", fillColor:tempColor ,showScale:false, showLabel:true, minTemp: -30, maxTemp: 50, defaultTemp: value[2]});
 		$(tempGauge + "Date").html(value[1].replace(" ", "<br />"));
 		
 		<?php
