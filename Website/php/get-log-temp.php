@@ -45,7 +45,7 @@
 	//	$response->recordsFiltered = $row['NUMRECORDS'];
 	}
 	
-	$sql = "SELECT EVENT_ID, datetime(DATE, 'localtime') as DATE, EVENT_DESC FROM TEMP_LOG";	
+	$sql = "SELECT EVENT_ID, datetime(DATE, 'localtime') as DATE, EVENT_DESC FROM TEMP_LOG ORDER BY DATE DESC";	
 	
 	//if(!empty($search_value)) $sql .= " WHERE EVENT_DESC LIKE '%" . 	$search_value ."%'";
 //	$sql .= " ORDER BY " . $ordering_column . " " . $ordering_mode . " LIMIT " . $start . ", " . $length;
@@ -61,7 +61,7 @@
 	}
 	
 	$response->data = $data;
-	$out = json_encode($data);
+	$out = json_encode($response);
 	header('Content-Type: application/json');
 	echo $out;
 ?>

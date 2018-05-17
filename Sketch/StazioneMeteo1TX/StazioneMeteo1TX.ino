@@ -145,7 +145,7 @@ void loop()
   Serial.println("timerCount: ");
   Serial.println(timerCount);
 
-  delay(5000); // client will trigger the communication after two seconds
+  delay(5000); // client will trigger the communication after 5 seconds
 }
 
 bool postData()

@@ -158,36 +158,6 @@ function init() {
 		]
 	});	
 	
-	// initialize the DataTable object	
-	table = $('#temp-table').DataTable({
-		pageLength: 10,
-		lengthMenu: [5, 10, 25],
-		serverSide: false,
-		ajax: {
-			url: 'php/get-log-temp.php',
-			type: 'POST'
-		},
-		"language": {
-                "url": "js/dataTables.italian.lang"
-            },
-		"autoWidth": false,
-		"columns": [
-			{ "width": "200px",			  
-			   "render": function ( data, type, full, meta ) {
-				   var descMeteo='';
-				   
-				   if (data=='0') {descMeteo='Casetta'};
-				   if (data=='1') {descMeteo='Esterno'};
-				   if (data=='2') {descMeteo='Int. inferiore'};
-				   if (data=='3') {descMeteo='Int. superiore'};
-				
-				return descMeteo  + ' (' + data + ')'; }},			  
-			{ "width": "170px",
-			  "type": "date" },
-			null
-		]
-	});	
-	
 	// a key was pressed on the keyboard
 	$(document).keyup(function(event) {
 	
