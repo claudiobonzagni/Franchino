@@ -6,6 +6,7 @@
  *  Communicates: wifi_server_01.ino
  *
  *  SERVER: 192.168.178.224
+ *  CLIENT:
  *
  */
 #include <SPI.h>
