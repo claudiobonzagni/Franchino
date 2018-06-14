@@ -11,7 +11,6 @@
 #include <OneWire.h>
 #include <DallasTemperature.h>
 
-
 // Data wire is plugged into port 2 on the Arduino
 #define ONE_WIRE_BUS 2
 
@@ -54,7 +53,6 @@ void setup()
   delay(200);
   Serial.println();
 #endif
-
 
   // Start up the library
   sensors.begin();
@@ -121,7 +119,7 @@ void loop()
 
 bool postData()
 {
-/*
+  /*
 Invio i dati della temperatura al server Arduino Yun (per salvarli nel database SqlLite)
 */
   WiFiClient client;
@@ -169,5 +167,3 @@ Invio i dati della temperatura al server Arduino Yun (per salvarli nel database 
     return false;
   }
 }
-
-
