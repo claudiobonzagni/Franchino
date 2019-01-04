@@ -180,6 +180,7 @@ function init() {
 				   if (data=='1') {descMeteo='Esterno'};
 				   if (data=='2') {descMeteo='Int. inferiore'};
 				   if (data=='3') {descMeteo='Int. superiore'};
+				   if (data=='4') {descMeteo='CED'};
 				
 				return descMeteo  + ' (' + data + ')'; }},			  
 			{ "width": "170px",
