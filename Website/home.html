@@ -1,0 +1,112 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Franchino - Irrigazione automatica</title>
+  <link rel='stylesheet' type='text/css' href='css/jquery-ui.css' />
+  <link rel='stylesheet' type='text/css' href='css/jquery-ui-slider-pips.css' />
+  <link rel="stylesheet" type="text/css" href="css/jquery.dataTables.css" />
+  <link rel='stylesheet' type='text/css' href='css/jquery.weekcalendar.css' />
+
+  <link rel='stylesheet' type='text/css' href='css/bootstrap.min.css' />
+  <link rel='stylesheet' type='text/css' href='css/main.css?v=4' />
+  <link rel='stylesheet' type='text/css' href='css/switches.css' />
+  <link rel='stylesheet' type='text/css' href='css/buttons.css' />
+  <link rel='stylesheet' type='text/css' href='css/fieldsets.css' />
+
+  <script type='text/javascript' src='js/jquery-1.11.2.min.js'></script>
+  <script type='text/javascript' src='js/jquery-migrate-1.2.1.min.js'></script>
+  <script type='text/javascript' src='js/jquery-ui-1.12.1.js'></script>
+  <script type='text/javascript' src='js/bootstrap.min.js'></script>
+
+  <script type="text/javascript" src="js/jquery-ui-slider-pips.js"></script>
+  <script type="text/javascript" src="js/date.js"></script>
+  <script type='text/javascript' src='js/jquery.weekcalendar.js'></script>
+  <script type="text/javascript" src="js/jquery.dataTables.js"></script>
+
+  <script type='text/javascript' src='php/franchino-home.php'></script>
+
+
+
+  <script type="text/javascript" src="js/raphael-min.js"></script>
+  <script type="text/javascript" src="js/kuma-gauge.jquery.js"></script>
+
+  <script type='text/javascript'>
+
+    $(document).ready(function () {
+      init();
+    });
+   
+  </script>
+
+</head>
+
+<body>
+  <!-- Nav Bar -->
+  <nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+          aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <div> <a class="navbar-brand" href="index.php"><span class="glyphicon glyphicon-tint " aria-hidden="true"></span>
+            Franchino ®</a></div>
+
+      </div>
+      <div id="navbar" class="navbar-collapse collapse">
+        <!-- Nav tabs -->
+        <ul class="nav nav-pills nav-fill franchino-nav">
+          <li class="active"><a href="#panel_4" data-toggle="tab">Temperature</a></li>
+          <li><a href="#panel_5" data-toggle="tab">Log</a></li>
+          <li><a href="#panel_1" data-toggle="tab">Valvole</a></li>
+          <li><a href="#panel_2" data-toggle="tab">Programmazione <span class="badge" id="franchino-prog-badge"></span></a></li>
+          <li><a href="#panel_3" data-toggle="tab">Eventi</a></li>
+        </ul>
+      </div>
+
+    </div>
+  </nav>
+  <!-- <img src='images/logo.jpg' /> -->
+  <div class="container-fluid">
+    <!-- Tab panes -->
+    <div class="">
+      <div class="" id="panel_4">
+        <div id="temp-fragment">
+          <div class=" franchino-panel">
+            <div class="">
+              <div class="">
+                <div class="row">
+                  <div class="col-xs-12 fr-temp-title2">
+                    <div class="js-gauge js-gauge--1 gauge"></div>
+                    <div class="tempGaugeTitle fr-temp-title2"></div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-12 fr-temp-gauge">
+                    <div class="tempGauge  "></div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-12">
+                    <div class="tempGaugeDate fr-temp-date2"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div id="dialog" title="Warning"></div>
+  </div>
+</body>
+
+</html>

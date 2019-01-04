@@ -130,6 +130,15 @@ body {
 	text-align:center;
 	
 }
+.fr-temp-title2{
+	
+	padding-bottom:20px;
+	padding-top:40px;
+	font-size: 60px;
+	text-align:center;
+	
+}
+
 .fr-temp-gauge canvas{
 	
 	margin-left: 0px;
@@ -138,7 +147,18 @@ body {
 	display: block;
 }
 .fr-temp-date{
-	padding-top:20px;	
+	padding-top:40px;	
 	font-size: 16px;
+	text-align:center;
+}
+.fr-temp-date2{
+	padding-top:30px;	
+	font-size: 30px;
+	text-align:center;
+}
+
+.fr-temp-gauge{
+	padding-top:20px;	
+	font-size: 80px;
 	text-align:center;
 }
