@@ -234,7 +234,7 @@ void loop()
   Serial.println("meteoToShow: ");
   Serial.println(meteoToShow);
 
-  delay(2000); // client will trigger the communication after two seconds
+  delay(1000); // client will trigger the communication after two seconds
 }
 
 bool postData()
@@ -287,3 +287,4 @@ Invio i dati della temperatura al server Arduino Yun (per salvarli nel database 
     return false;
   }
 }
+
