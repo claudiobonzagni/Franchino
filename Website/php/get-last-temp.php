@@ -39,14 +39,35 @@
 	$sql .= "SELECT EVENT_ID, DATE, EVENT_DESC FROM (SELECT EVENT_ID, datetime(DATE, 'localtime') as DATE, EVENT_DESC FROM TEMP_LOG WHERE EVENT_ID=3 ORDER BY DATE DESC LIMIT 1)";
 	$sql .= " ORDER BY EVENT_ID ";
 		
+
+	//locale_set_default('it-IT');
+	//Locale::setDefault('de-DE');
+	//setlocale(LC_TIME, 'it_IT');
+	//setlocale(LC_TIME, 'ita', 'it_IT');
+//setlocale(LC_ALL, 'it_IT.UTF-8'); 
+	//setlocale(LC_ALL, 'IT'); 
+	
 	$data = array();
 	foreach (DBquery($db_handler, $sql) as $row) {
+	
+		$d=date("d", strtotime($row['DATE']));
+		$dayVal=date("l", strtotime($row['DATE']));
+		$monthVal=date("m", strtotime($row['DATE']));
+		
+		$day=getWeekDay($dayVal);
+		$month=getMonth($monthVal);
+		//echo $month;
+		
+		
+		$dayDesc=date("Y H:i:s", strtotime($row['DATE']));
+		//echo $dayDesc;
 	
 		$event = array();
 		array_push($event, $row['EVENT_ID']);
 		array_push($event,date("d/m/Y H:i:s", strtotime($row['DATE'])) );
 		array_push($event, $row['EVENT_DESC']);
-		
+		array_push($event,"$day $d $month $dayDesc"  );
+		//array_push($event,"$day "  );
 		array_push($data, $event);
 	}
 	
@@ -54,4 +75,41 @@
 	$out = json_encode($data);
 	header('Content-Type: application/json');
 	echo $out;
+	
+	
+function getWeekDay($fname) {
+	
+	$retValue=$fname;
+
+    if ($retValue=="Monday") $retValue="lunedì";
+    if ($retValue=="Tuesday") $retValue="martedì";
+    if ($retValue=="Wednesday") $retValue="mercoledì";
+    if ($retValue=="Thursday") $retValue="giovedì";
+    if ($retValue=="Friday") $retValue="venerdì";
+    if ($retValue=="Saturday") $retValue="sabato";
+    if ($retValue=="Sunday") $retValue="domenica";
+	
+    return $retValue;
+}
+
+function getMonth($fname) {
+	
+	$retValue=$fname;
+
+    if ($retValue=="01") $retValue="gennaio";
+    if ($retValue=="02") $retValue="febbraio";
+    if ($retValue=="03") $retValue="marzo";
+	if ($retValue=="04") $retValue="aprile";
+	if ($retValue=="05") $retValue="maggio";
+	if ($retValue=="06") $retValue="giugno";
+	if ($retValue=="07") $retValue="luglio";
+	if ($retValue=="08") $retValue="agosto";
+	if ($retValue=="09") $retValue="settembre";
+	if ($retValue=="10") $retValue="ottobre";
+	if ($retValue=="11") $retValue="novembre";
+	if ($retValue=="12") $retValue="dicembre";
+	
+    return $retValue;
+}
+
 ?>
