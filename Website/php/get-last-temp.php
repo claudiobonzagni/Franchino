@@ -37,17 +37,31 @@
 	$sql .= "SELECT EVENT_ID, DATE, EVENT_DESC FROM (SELECT EVENT_ID, datetime(DATE, 'localtime') as DATE, EVENT_DESC FROM TEMP_LOG WHERE EVENT_ID=2 ORDER BY DATE DESC LIMIT 1)";
 	$sql .= " UNION ";
 	$sql .= "SELECT EVENT_ID, DATE, EVENT_DESC FROM (SELECT EVENT_ID, datetime(DATE, 'localtime') as DATE, EVENT_DESC FROM TEMP_LOG WHERE EVENT_ID=3 ORDER BY DATE DESC LIMIT 1)";
+	$sql .= " UNION ";
+	$sql .= "SELECT EVENT_ID, DATE, EVENT_DESC FROM (SELECT EVENT_ID, datetime(DATE, 'localtime') as DATE, EVENT_DESC FROM TEMP_LOG WHERE EVENT_ID=4 ORDER BY DATE DESC LIMIT 1)";
 	$sql .= " ORDER BY EVENT_ID ";
-		
-
-	//locale_set_default('it-IT');
-	//Locale::setDefault('de-DE');
-	//setlocale(LC_TIME, 'it_IT');
-	//setlocale(LC_TIME, 'ita', 'it_IT');
-//setlocale(LC_ALL, 'it_IT.UTF-8'); 
-	//setlocale(LC_ALL, 'IT'); 
 	
 	$data = array();
+
+	// data ora correnti
+	$curHour=date("H:i");
+	$curDay=date("l");
+	$d=date("d");
+	$curMonth=date("m");
+	$curYear=date("Y");
+
+	$curDay=getWeekDay($curDay);
+	$curMonth=getMonth($curMonth);
+	$curDayDesc="$curDay $d $curMonth $curYear";
+
+	//Aggiungo ora
+	$event = array();
+	array_push($event, "-1");
+	array_push($event,"2");
+	array_push($event, $curHour);
+	array_push($event,$curDayDesc  );
+	array_push($data, $event);
+
 	foreach (DBquery($db_handler, $sql) as $row) {
 	
 		$d=date("d", strtotime($row['DATE']));
@@ -58,8 +72,7 @@
 		$month=getMonth($monthVal);
 		//echo $month;
 		
-		
-		$dayDesc=date("Y H:i:s", strtotime($row['DATE']));
+		$dayDesc=date("Y H:i", strtotime($row['DATE']));
 		//echo $dayDesc;
 	
 		$event = array();
@@ -67,10 +80,12 @@
 		array_push($event,date("d/m/Y H:i:s", strtotime($row['DATE'])) );
 		array_push($event, $row['EVENT_DESC']);
 		array_push($event,"$day $d $month $dayDesc"  );
-		//array_push($event,"$day "  );
 		array_push($data, $event);
 	}
 	
+	
+
+
 	$response->data = $data;
 	$out = json_encode($data);
 	header('Content-Type: application/json');
@@ -81,11 +96,11 @@ function getWeekDay($fname) {
 	
 	$retValue=$fname;
 
-    if ($retValue=="Monday") $retValue="lunedì";
-    if ($retValue=="Tuesday") $retValue="martedì";
-    if ($retValue=="Wednesday") $retValue="mercoledì";
-    if ($retValue=="Thursday") $retValue="giovedì";
-    if ($retValue=="Friday") $retValue="venerdì";
+    if ($retValue=="Monday") $retValue="lunedï¿½";
+    if ($retValue=="Tuesday") $retValue="martedï¿½";
+    if ($retValue=="Wednesday") $retValue="mercoledï¿½";
+    if ($retValue=="Thursday") $retValue="giovedï¿½";
+    if ($retValue=="Friday") $retValue="venerdï¿½";
     if ($retValue=="Saturday") $retValue="sabato";
     if ($retValue=="Sunday") $retValue="domenica";
 	
