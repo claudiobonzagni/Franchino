@@ -51,7 +51,7 @@ int meteoToShow = 1;
 // 3600000 millisecondi in un'ora
 // 5000 millisecondi tra una lettura e l'altra
 // / (3600000 / 5000) = 720
-int timerMax = 360; //720
+int timerMax = 180; //720
 int timerCount = timerMax;
 
 byte ledPin = 2;
