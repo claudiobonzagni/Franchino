@@ -38,6 +38,13 @@ const char *host = "192.168.178.185";
 const char *hostUrl = "//sd/irrighino/php/log-temp.php";
 
 float temperature;
+
+String temperatureLast1;
+String temperatureLast2;
+String temperatureLast3;
+String temperatureLast4;
+int tempLogCount =1;
+
 float temperatureRemote;
 String temperatureRemote1String;
 String temperatureRemote3String;
@@ -51,24 +58,26 @@ int meteoToShow = 1;
 // 3600000 millisecondi in un'ora
 // 5000 millisecondi tra una lettura e l'altra
 // / (3600000 / 5000) = 720
-int timerMax = 180; //720
-int timerCount = timerMax;
+int timerMax = 25; //720
+int timerCount = 0;
 
 byte ledPin = 2;
 char ssid[] = "ASUS";       // SSID of your home WiFi
 char pass[] = "EABE577DA8"; // password of your home WiFi
 WiFiServer server(80);
+ 
 
+  
 void setup()
 {
 
 #ifdef SERIAL_DEBUG
   Serial.begin(115200);
   delay(200);
-  Serial.println();
+  ////Serial.println();
 #endif
 
-  Serial.println("setup");
+  ////Serial.println("setup");
   //WiFi.config(ip, gateway, subnet);       // forces to use the fix IP
 
   // per default by default viene impostata una tensione ionterna di 3.3V
@@ -89,31 +98,31 @@ void setup()
   delay(10); // short delay
 
   WiFi.begin(ssid, pass); // connects to the WiFi router
-  Serial.println("WiFi.begin");
+  ////Serial.println("WiFi.begin");
 
   while (WiFi.status() != WL_CONNECTED)
   {
-    Serial.print(".");
+    //Serial.print(".");
     delay(500);
   }
   server.begin(); // starts the server
 
   // Visualizzo informazioni
-  Serial.println("Connected to wifi");
-  Serial.print("Status: ");
-  Serial.println(WiFi.status()); // some parameters from the network
-  Serial.print("IP: ");
-  Serial.println(WiFi.localIP());
-  Serial.print("Subnet: ");
-  Serial.println(WiFi.subnetMask());
-  Serial.print("Gateway: ");
-  Serial.println(WiFi.gatewayIP());
-  Serial.print("SSID: ");
-  Serial.println(WiFi.SSID());
-  Serial.print("Signal: ");
-  Serial.println(WiFi.RSSI());
-  Serial.print("Networks: ");
-  Serial.println(WiFi.scanNetworks());
+  ////Serial.println("Connected to wifi");
+  //Serial.print("Status: ");
+  ////Serial.println(WiFi.status()); // some parameters from the network
+  //Serial.print("IP: ");
+  ////Serial.println(WiFi.localIP());
+  //Serial.print("Subnet: ");
+  ////Serial.println(WiFi.subnetMask());
+  //Serial.print("Gateway: ");
+  ////Serial.println(WiFi.gatewayIP());
+  //Serial.print("SSID: ");
+  ////Serial.println(WiFi.SSID());
+  //Serial.print("Signal: ");
+  ////Serial.println(WiFi.RSSI());
+  //Serial.print("Networks: ");
+  ////Serial.println(WiFi.scanNetworks());
 
   pinMode(ledPin, OUTPUT);
 }
@@ -123,14 +132,15 @@ void loop()
 
   // call sensors.requestTemperatures() to issue a global temperature
   // request to all devices on the bus
-  Serial.print("Requesting temperatures...");
+  //Serial.print("Requesting temperatures...");
   sensors.requestTemperatures(); // Send the command to get temperatures
-  Serial.println("DONE");
+  ////Serial.println("DONE");
   // After we got the temperatures, we can print them here.
   // We use the function ByIndex, and as an example get the temperature from the first sensor only.
-  Serial.print("Temperature for the device 1 (index 0) is: ");
+  //Serial.print("Temperature for the device 1 (index 0) is: ");
   temperature = sensors.getTempCByIndex(0);
-  Serial.println(temperature);
+  temperatureLast2=String(temperature, 2);
+  ////Serial.println(temperature);
 
   // Avvio server
   WiFiClient client = server.available();
@@ -139,20 +149,21 @@ void loop()
     if (client.connected())
     {
       digitalWrite(ledPin, LOW); // to show the communication only (inverted logic)
-      Serial.println(".");
+      ////Serial.println(".");
       String request = client.readStringUntil('\r'); // receives the message from the client
 
       clientIPAddress = client.remoteIP(); // Leggo IP del client
 
-      Serial.print("From client: ");
-      Serial.println(clientIPAddress);
-      Serial.println(request);
+      //Serial.print("From client: ");
+      ////Serial.println(clientIPAddress);
+      ////Serial.println(request);
 
       // Controllo il client dall'IP
       if (clientIPAddress == IPAddress(192, 168, 178, 234))
       {
         temperatureRemote1String = request;
-        Serial.print("From meteo 1 (Esterno): ");
+        temperatureLast1=request;
+        //Serial.print("From meteo 1 (Esterno): ");
       }
       else
       {
@@ -160,12 +171,14 @@ void loop()
         {
           // Casetta
           temperatureRemote4String = request;
-          Serial.print("From meteo 4 (Casetta): ");
+          temperatureLast4=request;
+          //Serial.print("From meteo 4 (Casetta): ");
         }
         else
         {
           temperatureRemote3String = request;
-          Serial.print("From meteo 3 (Superiore): ");
+          temperatureLast3=request;
+          //Serial.print("From meteo 3 (Superiore): ");
         }
       }
 
@@ -212,7 +225,7 @@ void loop()
   {
     meteoToShow = 0; // Reset
   }
-
+ 
   display.print(valueToPrint);
   display.display();
   display.clearDisplay();
@@ -228,11 +241,13 @@ void loop()
   timerCount = timerCount + 1;
   meteoToShow = meteoToShow + 1;
 
+
+  
   Serial.println("timerCount: ");
   Serial.println(timerCount);
 
-  Serial.println("meteoToShow: ");
-  Serial.println(meteoToShow);
+  ////Serial.println("meteoToShow: ");
+  ////Serial.println(meteoToShow);
 
   delay(1000); // client will trigger the communication after two seconds
 }
@@ -242,7 +257,12 @@ bool postData()
   /*
 Invio i dati della temperatura al server Arduino Yun (per salvarli nel database SqlLite)
 */
-  WiFiClient client;
+
+    Serial.println("postData");
+ WiFiClient client;
+client.setTimeout(10);              //<<<<<set up timeout
+
+
   if (client.connect(host, 80))
   {
     Serial.println("connection OK");
@@ -250,15 +270,45 @@ Invio i dati della temperatura al server Arduino Yun (per salvarli nel database 
     // We now create a URI for the request
     String url = hostUrl;
 
-    url += "?temp=" + String(temperature, 2) + "&v=" + meteoStation;
+    if (tempLogCount == 1)    {
+       url += "?temp=" + temperatureLast1 + "&v=1" ; //Esterno
+      }
+      else
+      {
+         if (tempLogCount == 2){
+            url += "?temp=" + temperatureLast2 + "&v=2"; //Interno giu
+          }
+      
+         else
+          {
+             if (tempLogCount == 3){
+                url += "?temp=" + temperatureLast3 + "&v=3"; // Interno superiore
+              }
+               else
+                {
+                   if (tempLogCount == 4){
+                      url += "?temp=" + temperatureLast4 + "&v=0" ; //Casetta
+                    }
+                  }
+               }
+            }
+  //  url += "?temp=" + String(temperature, 2) + "&v=" + meteoStation;
 
-    Serial.print("Requesting URL: ");
+    //Serial.print("Requesting URL: ");
     Serial.println(url);
 
     // This will send the request to the server
     client.print(String("GET ") + url + " HTTP/1.1\r\n" +
                  "Host: " + host + "\r\n" +
                  "Connection: close\r\n\r\n");
+
+  tempLogCount = tempLogCount +1;
+  if (tempLogCount  > 4)
+   {
+    tempLogCount = 1;
+  }
+
+  
     unsigned long timeout = millis();
     while (client.available() == 0)
     {
@@ -277,8 +327,8 @@ Invio i dati della temperatura al server Arduino Yun (per salvarli nel database 
       Serial.print(line);
     }
 
-    Serial.println();
-    Serial.println("closing connection");
+    ////Serial.println();
+    ////Serial.println("closing connection");
   }
 
   else
@@ -287,4 +337,3 @@ Invio i dati della temperatura al server Arduino Yun (per salvarli nel database 
     return false;
   }
 }
-
