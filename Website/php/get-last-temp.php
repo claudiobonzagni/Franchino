@@ -96,11 +96,11 @@ function getWeekDay($fname) {
 	
 	$retValue=$fname;
 
-    if ($retValue=="Monday") $retValue="luned�";
-    if ($retValue=="Tuesday") $retValue="marted�";
-    if ($retValue=="Wednesday") $retValue="mercoled�";
-    if ($retValue=="Thursday") $retValue="gioved�";
-    if ($retValue=="Friday") $retValue="venerd�";
+    if ($retValue=="Monday") $retValue="lunedì";
+    if ($retValue=="Tuesday") $retValue="martedì";
+    if ($retValue=="Wednesday") $retValue="mercoledì";
+    if ($retValue=="Thursday") $retValue="giovedì";
+    if ($retValue=="Friday") $retValue="venerdì";
     if ($retValue=="Saturday") $retValue="sabato";
     if ($retValue=="Sunday") $retValue="domenica";
 	
