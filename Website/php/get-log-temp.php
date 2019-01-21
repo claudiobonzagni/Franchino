@@ -4,12 +4,14 @@
 
 	class Response {
 		
-	
+	//	public $draw;
+	//	public $recordsTotal;
+	//	public $recordsFiltered;
 		public $data;
 	}
 	
 	class Data {
-		//public $id;
+		public $id;
 		public $date;
 		public $eventId;
 		public $eventDesc;
@@ -17,35 +19,36 @@
 	}
 	
 	$response = new Response();
+	//$response->draw = $_POST["draw"];
 	
+	// get the search value
+//	$search_array = $_POST['search'];
+//	$search_value = $search_array['value'];
+	
+	// get the ordering parameters
+//	$ordering_array = $_POST['order'];
+//	$ordering_column = $ordering_array[0]['column'] + 1;
+//	$ordering_mode = $ordering_array[0]['dir'];
+	
+	// get the paging parameters
+//	$start = $_POST['start'];
+//	$length = $_POST['length'];	
 	
 	$db_handler  = DBconnect();
 
 	// count the number of records in the DB
-	//$sql = "SELECT COUNT(ID) AS NUMRECORDS FROM TEMP_LOG";
+	$sql = "SELECT COUNT(ID) AS NUMRECORDS FROM TEMP_LOG";
 //	if(!empty($search_value)) $sql .= " WHERE EVENT_DESC LIKE '%" . 	$search_value ."%'";
 	
-//	foreach (DBquery($db_handler, $sql) as $row) {
+	foreach (DBquery($db_handler, $sql) as $row) {
 	//	$response->recordsTotal = $row['NUMRECORDS'];
 	//	$response->recordsFiltered = $row['NUMRECORDS'];
-	//}
+	}
 	
-	$sql = "SELECT EVENT_ID, DATE, EVENT_DESC FROM (SELECT EVENT_ID, datetime(DATE, 'localtime') as DATE, EVENT_DESC FROM TEMP_LOG WHERE EVENT_ID=0 ORDER BY DATE DESC LIMIT 1)";
-	$sql .= " UNION ";
-	$sql .= "SELECT EVENT_ID, DATE, EVENT_DESC FROM (SELECT EVENT_ID, datetime(DATE, 'localtime') as DATE, EVENT_DESC FROM TEMP_LOG WHERE EVENT_ID=1 ORDER BY DATE DESC LIMIT 1)";
-	$sql .= " UNION ";
-	$sql .= "SELECT EVENT_ID, DATE, EVENT_DESC FROM (SELECT EVENT_ID, datetime(DATE, 'localtime') as DATE, EVENT_DESC FROM TEMP_LOG WHERE EVENT_ID=2 ORDER BY DATE DESC LIMIT 1)";
-	$sql .= " UNION ";
-	$sql .= "SELECT EVENT_ID, DATE, EVENT_DESC FROM (SELECT EVENT_ID, datetime(DATE, 'localtime') as DATE, EVENT_DESC FROM TEMP_LOG WHERE EVENT_ID=3 ORDER BY DATE DESC LIMIT 1)";
-	$sql .= " ORDER BY EVENT_ID ";
-		
-
-	//locale_set_default('it-IT');
-	//Locale::setDefault('de-DE');
-	//setlocale(LC_TIME, 'it_IT');
-	//setlocale(LC_TIME, 'ita', 'it_IT');
-//setlocale(LC_ALL, 'it_IT.UTF-8'); 
-	setlocale(LC_ALL, 'IT'); 
+	$sql = "SELECT EVENT_ID, datetime(DATE, 'localtime') as DATE, EVENT_DESC FROM TEMP_LOG WHERE LENGTH(EVENT_DESC)>0 ORDER BY DATE DESC LIMIT 100";	
+	
+	//if(!empty($search_value)) $sql .= " WHERE EVENT_DESC LIKE '%" . 	$search_value ."%'";
+//	$sql .= " ORDER BY " . $ordering_column . " " . $ordering_mode . " LIMIT " . $start . ", " . $length;
 	
 	$data = array();
 	foreach (DBquery($db_handler, $sql) as $row) {
@@ -54,12 +57,11 @@
 		array_push($event, $row['EVENT_ID']);
 		array_push($event,date("d/m/Y H:i:s", strtotime($row['DATE'])) );
 		array_push($event, $row['EVENT_DESC']);
-		array_push($event,date("l d F Y H:i:s", strtotime($row['DATE'])) );
 		array_push($data, $event);
 	}
 	
 	$response->data = $data;
-	$out = json_encode($data);
+	$out = json_encode($response);
 	header('Content-Type: application/json');
 	echo $out;
 ?>
