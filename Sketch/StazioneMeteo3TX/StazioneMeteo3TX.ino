@@ -3,10 +3,8 @@
  *  Sends and receives message from the server in every 2 seconds
  *  Communicates: wifi_server_01.ino
  */
-#include <SPI.h>
+ #include <ESP8266WiFi.h>
 
-#include <ESP8266HTTPClient.h>
-#include <ESP8266WiFi.h>
 
 #include <OneWire.h>
 #include <DallasTemperature.h>
@@ -37,8 +35,11 @@ unsigned long askTimer = 0;
 IPAddress server(192, 168, 178, 224); // the fix IP address of the server
 WiFiClient client;
 
-const char *host = "192.168.178.185";
-const char *hostUrl = "//sd/irrighino/php/log-temp.php";
+//const char *host = "192.168.178.185";
+//const char *hostUrl = "//sd/irrighino/php/log-temp.php";
+
+const char *host = "franchino.azurewebsites.net";
+const char *hostUrl = "/php/log-temp.php";
 
 float temperature;
 const char *meteoStation = "3"; // Identificativo della stazione meteo
@@ -46,7 +47,7 @@ const char *meteoStation = "3"; // Identificativo della stazione meteo
 // 3600000 millisecondi in un'ora
 // 5000 millisecondi tra una lettura e l'altra
 // / (3600000 / 5000) = 720
-int timerMax = 360; //720
+int timerMax = 5; //360; //720
 int timerCount = timerMax;
 
 bool connectedToWiFI = false;
@@ -148,8 +149,11 @@ bool postData()
 Invio i dati della temperatura al server Arduino Yun (per salvarli nel database SqlLite)
 */
   WiFiClient client;
+
+  Serial.printf("\n[Connecting to %s ... ", host);
   if (client.connect(host, 80))
   {
+    Serial.println("connected]");
     Serial.println("connection OK");
 
     // We now create a URI for the request

@@ -121,10 +121,12 @@ require('include.php');
       var tempGaugeValue;
       var tempColor;
       var tempGaugeTitle;
-      //debugger;
+      ;
       var value = data[currentMeteoStation];
-
-      tempGauge = ".tempGauge";
+//debugger
+	  if (typeof value !== 'undefined')
+		  {
+			   tempGauge = ".tempGauge";
 
       if (value[0] == '-1') {
         //ora corrente
@@ -164,6 +166,8 @@ require('include.php');
       $('.js-gauge--1').kumaGauge('update', {
         value: value[2]
       });
+			}  
+     
 
       // Incremento il contatore della stazione meteo
       currentMeteoStation = currentMeteoStation + 1;

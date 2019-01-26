@@ -10,9 +10,7 @@
  *  CLIENT TX 4: 192.168.178.228
  *
  */
-#include <SPI.h>
-#include <ESP8266WiFi.h>
-#include <ESP8266HTTPClient.h>
+ #include <ESP8266WiFi.h>
 
 #include <OneWire.h>
 #include <DallasTemperature.h>
@@ -34,8 +32,11 @@ DallasTemperature sensors(&oneWire);
 
 #define SERIAL_DEBUG // Uncomment this to dissable serial debugging
 
-const char *host = "192.168.178.185";
-const char *hostUrl = "//sd/irrighino/php/log-temp.php";
+//const char *host = "192.168.178.185";
+//const char *hostUrl = "//sd/irrighino/php/log-temp.php";
+
+const char *host = "franchino.azurewebsites.net";
+const char *hostUrl = "/php/log-temp.php";
 
 float temperature;
 
@@ -78,7 +79,7 @@ void setup()
 #endif
 
   ////Serial.println("setup");
-  //WiFi.config(ip, gateway, subnet);       // forces to use the fix IP
+ // WiFi.config(ip, gateway, subnet);       // forces to use the fix IP
 
   // per default by default viene impostata una tensione ionterna di 3.3V
   display.begin(SSD1306_SWITCHCAPVCC);
@@ -96,7 +97,7 @@ void setup()
   sensors.begin();
 
   delay(10); // short delay
-
+ //WiFi.config(ip,  gateway, subnet);
   WiFi.begin(ssid, pass); // connects to the WiFi router
   ////Serial.println("WiFi.begin");
 
@@ -258,14 +259,14 @@ bool postData()
 Invio i dati della temperatura al server Arduino Yun (per salvarli nel database SqlLite)
 */
 
-    Serial.println("postData");
- WiFiClient client;
-client.setTimeout(10);              //<<<<<set up timeout
+    Serial.println("postData azurewebsites");
+WiFiClient client2;
 
-
-  if (client.connect(host, 80))
+  Serial.printf("\n[Connecting to %s ... ", host);
+  if (client2.connect(host, 80))
   {
-    Serial.println("connection OK");
+    Serial.println("connected]");
+
 
     // We now create a URI for the request
     String url = hostUrl;
@@ -298,32 +299,32 @@ client.setTimeout(10);              //<<<<<set up timeout
     Serial.println(url);
 
     // This will send the request to the server
-    client.print(String("GET ") + url + " HTTP/1.1\r\n" +
+    client2.print(String("GET ") + url + " HTTP/1.1\r\n" +
                  "Host: " + host + "\r\n" +
                  "Connection: close\r\n\r\n");
 
   tempLogCount = tempLogCount +1;
-  if (tempLogCount  > 4)
+  if (tempLogCount  > 3)
    {
     tempLogCount = 1;
   }
 
   
     unsigned long timeout = millis();
-    while (client.available() == 0)
+    while (client2.available() == 0)
     {
       if (millis() - timeout > 5000)
       {
         Serial.println(">>> Client Timeout !");
-        client.stop();
+        client2.stop();
         return true;
       }
     }
 
     // Read all the lines of the reply from server and print them to Serial
-    while (client.available())
+    while (client2.available())
     {
-      String line = client.readStringUntil('\r');
+      String line = client2.readStringUntil('\r');
       Serial.print(line);
     }
 
